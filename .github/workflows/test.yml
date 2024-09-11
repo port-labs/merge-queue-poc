@@ -16,4 +16,5 @@ jobs:
 
     - name: Validate PR
       run: |
-        echo "Running tests as part of merge queue"
+        echo "Failing tests as part of merge queue"
+        exit 1
