@@ -27,7 +27,7 @@ jobs:
         counter=0
         max_retries=120  # 10 minutes / 5 seconds
         while [ $counter -lt $max_retries ]; do
-          response=$(curl -o /dev/null 'https://api.getport.io/v1/blueprints/lock_run/entities/pr' \
+          response=$(curl 'https://api.getport.io/v1/blueprints/lock_run/entities/pr' \
             -H "Authorization: $token")
           
           echo "The response:"
