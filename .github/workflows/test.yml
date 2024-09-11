@@ -29,7 +29,8 @@ jobs:
           response=$(curl 'https://api.getport.io/v1/blueprints/lock_run/entities/merge' \
             -H "Authorization: $token")
 
-          echo $response
+          curl 'https://api.getport.io/v1/blueprints/lock_run/entities/merge' \
+            -H "Authorization: $token"
           
           continue=$(echo $response | jq -r '.entity.properties.continue')
           echo $continue
