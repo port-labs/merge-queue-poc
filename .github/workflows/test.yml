@@ -1,0 +1,40 @@
+name: Merge Queue Workflow
+
+on:
+  merge_group:
+    branches: main
+    types: [checks_requested]
+
+
+jobs:
+  merge-queue:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check API Response
+      id: check-api
+      run: |
+        ATTEMPTS=0
+        MAX_ATTEMPTS=60  # This will limit the attempts to 5 minutes (60*5s)
+        while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
+          RESPONSE=$(curl -s -X GET "https://your-api-endpoint.com/api")
+          CONTINUE=$(echo $RESPONSE | jq -r '.properties.continue')
+          if [ "$CONTINUE" == "true" ]; then
+            SUCCEED=$(echo $RESPONSE | jq -r '.properties.succeed')
+            if [ "$SUCCEED" == "true" ]; then
+              echo "Success! Proceeding..."
+              exit 0
+            else
+              echo "API indicates failure. Exiting..."
+              exit 1
+            fi
+          else
+            echo "Waiting for API to signal continue..."
+            sleep 5
+          fi
+          ATTEMPTS=$((ATTEMPTS + 1))
+        done
+        echo "Timeout waiting for API response. Exiting..."
+        exit 1
