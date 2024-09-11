@@ -18,8 +18,8 @@ jobs:
           -H 'Content-Type: application/json' \
           -H 'Accept: application/json' \
           -d '{
-            "clientId": "string",
-            "clientSecret": "string"
+            "clientId": "${{ secrets.PORT_CLIENT_ID }}",
+            "clientSecret": "${{ secrets.PORT_CLIENT_SECRET }}"
           }' | jq -r '.accessToken')
 
         echo "Waiting for entity to be ready"
