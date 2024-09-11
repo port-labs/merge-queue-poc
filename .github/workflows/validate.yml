@@ -27,8 +27,11 @@ jobs:
         counter=0
         max_retries=120  # 10 minutes / 5 seconds
         while [ $counter -lt $max_retries ]; do
-          response=$(curl -L 'https://api.getport.io/v1/blueprints/lock_run/entities/pr' \
+          response=$(curl -o /dev/null -L 'https://api.getport.io/v1/blueprints/lock_run/entities/pr' \
             -H "Authorization: $token")
+          
+          echo $response
+          
           continue=$(echo $response | jq -r '.properties.continue')
           
           if [ "$continue" == "true" ]; then

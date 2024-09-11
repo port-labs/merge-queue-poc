@@ -28,6 +28,9 @@ jobs:
         while [ $counter -lt $max_retries ]; do
           response=$(curl -L 'https://api.getport.io/v1/blueprints/lock_run/entities/merge' \
             -H "Authorization: $token")
+
+          echo $response
+          
           continue=$(echo $response | jq -r '.properties.continue')
           
           if [ "$continue" == "true" ]; then
