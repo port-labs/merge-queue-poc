@@ -1,4 +1,4 @@
-name: Merge Queue Workflow
+name: On PR Validation
 
 on:
   pull_request:
@@ -12,6 +12,43 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Validate PR
+    - name: Wait for entity
       run: |
-        echo "Validating PR before merge"
+        token=$(curl -L 'https://api.getport.io/v1/auth/access_token' \
+          -H 'Content-Type: application/json' \
+          -H 'Accept: application/json' \
+          -d '{
+            "clientId": "string",
+            "clientSecret": "string"
+          }' | jq -r '.accessToken')
+
+        echo "Waiting for entity to be ready"
+
+        counter=0
+        max_retries=120  # 10 minutes / 5 seconds
+        while [ $counter -lt $max_retries ]; do
+          response=$(curl -L 'https://api.getport.io/v1/blueprints/lock_run/entities/' \
+            -H "Authorization: $token")
+          continue=$(echo $response | jq -r '.properties.continue')
+          
+          if [ "$continue" == "true" ]; then
+            echo "Entity is ready after $counter attempts."
+            succeed=$(echo $response | jq -r '.properties.succeed')
+            if [ "$succeed" == "true" ]; then
+              echo "Entity succeeded."
+              break
+            else
+              echo "Entity did not succeed."
+              exit 1
+            fi
+          fi
+          
+          counter=$((counter + 1))
+          echo "Attempt $counter: Entity not ready yet. Sleeping for 5 seconds."
+          sleep 5
+        done
+
+        if [ $counter -eq $max_retries ]; then
+          echo "Entity was not ready after 10 minutes."
+          exit 1
+        fi
