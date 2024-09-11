@@ -13,7 +13,7 @@ jobs:
 
     - name: Wait for entity
       run: |
-        token=$(curl -L 'https://api.getport.io/v1/auth/access_token' \
+        token=$(curl -o /dev/null 'https://api.getport.io/v1/auth/access_token' \
           -H 'Content-Type: application/json' \
           -H 'Accept: application/json' \
           -d '{
@@ -26,7 +26,7 @@ jobs:
         counter=0
         max_retries=120  # 10 minutes / 5 seconds
         while [ $counter -lt $max_retries ]; do
-          response=$(curl 'https://api.getport.io/v1/blueprints/lock_run/entities/merge' \
+          response=$(curl -o /dev/null 'https://api.getport.io/v1/blueprints/lock_run/entities/merge' \
             -H "Authorization: $token")
           
           continue=$(echo $response | jq -r '.entity.properties.continue')
