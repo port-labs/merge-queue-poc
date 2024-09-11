@@ -1,2 +1,2 @@
 # merge-queue-poc
-test2
+test
