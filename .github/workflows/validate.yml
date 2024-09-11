@@ -30,16 +30,11 @@ jobs:
           response=$(curl 'https://api.getport.io/v1/blueprints/lock_run/entities/pr' \
             -H "Authorization: $token")
           
-          echo "The response:"
-          echo $response
-          
           continue=$(echo $response | jq -r '.entity.properties.continue')
-          echo $continue
           
           if [ "$continue" == "true" ]; then
             echo "Entity is ready after $counter attempts."
             succeed=$(echo $response | jq -r '.entity.properties.succeed')
-            echo $succeed
             if [ "$succeed" == "true" ]; then
               echo "Entity succeeded."
               break
