@@ -32,10 +32,12 @@ jobs:
           echo $response
           
           continue=$(echo $response | jq -r '.properties.continue')
+          echo $continue
           
           if [ "$continue" == "true" ]; then
             echo "Entity is ready after $counter attempts."
             succeed=$(echo $response | jq -r '.properties.succeed')
+            echo $succeed
             if [ "$succeed" == "true" ]; then
               echo "Entity succeeded."
               break
