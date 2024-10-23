@@ -13,7 +13,8 @@ jobs:
 
     - name: Wait for entity
       run: |
-        echo "${{ toJson(github.event.merge_group) }}" | jq
+        echo '${{ toJson(github.event.merge_group) }}' | jq > /tmp/merge_group.json
+        cat /tmp/merge_group.json
         token=$(curl -s 'https://api.getport.io/v1/auth/access_token' \
           -H 'Content-Type: application/json' \
           -H 'Accept: application/json' \
