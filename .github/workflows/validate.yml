@@ -53,9 +53,3 @@ jobs:
           echo "Entity was not ready after 10 minutes."
           exit 1
         fi
-
-  sleep-job:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Sleep for 5 minutes
-      run: sleep 300
